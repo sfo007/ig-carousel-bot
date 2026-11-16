@@ -9,7 +9,8 @@ const HANDLE = '@salmanul.farisy_';
 const NAME = 'Salmanul Farisy';
 const SITE = 'salmanulfarisy.com';
 const BRAND = { bg: '#0A0A0C', card: '#121214', line: '#232327', accent: '#74C0FF', text: '#EEEBE4', muted: '#8E8E95' };
-const MODEL = 'gemini-2.5-flash';
+// Tried in order; the first one that works is used (set GEMINI_MODEL to force one)
+const MODELS = [process.env.GEMINI_MODEL, 'gemini-3.8-flash', 'gemini-flash-latest', 'gemini-2.5-flash'].filter(Boolean);
 const CTA_TEXT = 'DM "AUDIT" for a free quick review';
 // --------------------
 
@@ -66,17 +67,23 @@ Rules:
 - 8-10 relevant hashtags, lowercase, without the # symbol.
 - Do not invent statistics.`;
 
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { responseMimeType: 'application/json', temperature: 0.8 },
-    }),
-  });
-  const data = await res.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) throw new Error('Gemini returned no content: ' + JSON.stringify(data).slice(0, 500));
+  let text, lastErr;
+  for (const model of MODELS) {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { responseMimeType: 'application/json', temperature: 0.8 },
+      }),
+    });
+    const data = await res.json();
+    text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (text) { console.log('Model used:', model); break; }
+    lastErr = `${model}: ${JSON.stringify(data).slice(0, 300)}`;
+    console.warn('Model failed, trying next ->', lastErr);
+  }
+  if (!text) throw new Error('Gemini returned no content. Last error: ' + lastErr);
   const out = JSON.parse(text);
   if (!Array.isArray(out.slides) || out.slides.length < 3) throw new Error('Bad slide data from Gemini');
   return out;

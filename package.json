@@ -1,0 +1,13 @@
+{
+  "name": "ig-carousel-bot",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "node generate.js",
+    "publish": "node publish.js",
+    "preview": "MOCK=1 node generate.js"
+  },
+  "dependencies": {
+    "playwright": "^1.48.0"
+  }
+}

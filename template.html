@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:{{BG}}; --card:{{CARD}}; --accent:{{ACCENT}}; --text:{{TEXT}}; --muted:{{MUTED}}; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { width:1080px; height:1350px; background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; overflow:hidden; position:relative; }
+  .glow { position:absolute; width:700px; height:700px; border-radius:50%; background:var(--accent); opacity:.10; filter:blur(120px); top:-200px; right:-200px; }
+  .wrap { position:absolute; inset:0; padding:90px; display:flex; flex-direction:column; }
+  .top { display:flex; justify-content:space-between; align-items:center; font-size:30px; color:var(--muted); }
+  .handle { font-weight:500; }
+  .count { font-family:'Space Grotesk',sans-serif; }
+  .main { flex:1; display:flex; flex-direction:column; justify-content:center; }
+  .num { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:150px; color:var(--accent); line-height:1; margin-bottom:30px; }
+  h1 { font-family:'Space Grotesk',sans-serif; font-weight:700; line-height:1.08; letter-spacing:-1px; }
+  p { color:var(--muted); line-height:1.4; margin-top:40px; }
+  .cover h1 { font-size:112px; }
+  .cover p { font-size:44px; }
+  .content h1 { font-size:76px; }
+  .content p { font-size:42px; color:var(--text); opacity:.85; }
+  .cta { align-items:flex-start; }
+  .cta h1 { font-size:92px; }
+  .cta p { font-size:44px; }
+  .pill { display:inline-block; margin-top:50px; padding:24px 44px; background:var(--accent); color:var(--bg); font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:38px; border-radius:100px; }
+  .bottom { display:flex; justify-content:space-between; align-items:center; font-size:30px; color:var(--muted); }
+  .dots { display:flex; gap:12px; }
+  .dot { width:14px; height:14px; border-radius:50%; background:var(--card); border:2px solid var(--muted); opacity:.6; }
+  .dot.on { background:var(--accent); border-color:var(--accent); opacity:1; }
+  .swipe { font-family:'Space Grotesk',sans-serif; color:var(--accent); }
+</style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="wrap">
+    <div class="top"><span class="handle">{{HANDLE}}</span><span class="count">{{NUM}}/{{TOTAL}}</span></div>
+    <div class="main {{TYPE}}">
+      {{NUMBER_BLOCK}}
+      <h1>{{TITLE}}</h1>
+      <p>{{BODY}}</p>
+      {{PILL}}
+    </div>
+    <div class="bottom"><div class="dots">{{DOTS}}</div><span class="swipe">{{SWIPE}}</span></div>
+  </div>
+</body>
+</html>

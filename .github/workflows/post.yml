@@ -1,0 +1,60 @@
+name: Post Instagram carousel
+
+on:
+  schedule:
+    # Tuesday and Friday at 12:30 UTC = 6:00 PM IST
+    - cron: "30 12 * * 2,5"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Generate slides but do not post to Instagram"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ig-post
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install
+
+      - run: npx playwright install --with-deps chromium
+
+      - name: Generate slides
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node generate.js
+
+      - name: Commit slides (so Instagram can fetch the images)
+        run: |
+          git config user.name "carousel-bot"
+          git config user.email "carousel-bot@users.noreply.github.com"
+          git add posts
+          git commit -m "Add carousel slides" || echo "nothing to commit"
+          git push
+
+      - name: Publish to Instagram
+        env:
+          IG_TOKEN: ${{ secrets.IG_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || 'false' }}
+        run: node publish.js
+
+      - name: Mark topic as posted
+        run: |
+          git add topics.json
+          git commit -m "Mark topic as posted" || echo "nothing to commit"
+          git push

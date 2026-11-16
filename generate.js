@@ -54,11 +54,16 @@ Audience: online store owners and marketers.
 Return ONLY JSON in this shape:
 {"slides":[{"title":"","body":"","visual":null}],"caption":"","hashtags":[]}
 
-Each slide except the last has a "visual", one of:
-{"type":"code","file":"sections/main-product.liquid","lines":["..."]}  - a short, correct, realistic snippet (2-5 lines, max 44 characters per line) that illustrates the tip. Use real Shopify Liquid, HTML, CSS or WordPress PHP only. Never invent functions, settings or APIs.
+Each slide except the last has a "visual" that a NON-TECHNICAL store owner understands at a glance. Never use code. Choose one:
+{"type":"flow","steps":["..."]}  - 3-4 steps, max 12 characters each. Use for the hook slide.
+{"type":"page","highlight":"button|reviews|price|shipping|sticky|thumb","note":"short label"}  - a mock product page with one part highlighted.
+{"type":"compare","left":{"label":"Before","button":"optional button text","text":"short text"},"right":{"label":"After","button":"optional","text":"short text"}}
+{"type":"badges","items":[{"icon":"lock|return|truck|card|chat|star","label":"max 22 chars"}]}  - 3 items.
+{"type":"gallery","items":[{"icon":"image|zoom|ruler|user","label":"max 16 chars"}]}  - 4 items.
+{"type":"speed","before":{"label":"max 20 chars","text":"Slow"},"after":{"label":"max 20 chars","text":"Fast"}}
+{"type":"toggles","items":[{"label":"max 28 chars","on":true}]}  - 3-4 items; on=false means switch it off or remove it.
 {"type":"checklist","items":["..."]}  - 3-4 items, max 26 characters each.
-{"type":"flow","steps":["..."]}  - 3-4 steps, max 14 characters each (e.g. a funnel or process).
-Use "code" when the tip can be shown in code. Otherwise use "checklist". Use "flow" for the hook slide. The last slide has "visual": null.
+Pick the visual that best shows the tip and vary them across slides. The last slide has "visual": null.
 
 Rules:
 - Exactly 7 slides.
@@ -136,8 +141,85 @@ const highlight = (line) =>
     .replace(/(\{\{.*?\}\}|\{%.*?%\})/g, '<span class="acc">$1</span>')
     .replace(/(&lt;\/?[a-zA-Z][^&]*?&gt;)/g, '<span class="tag">$1</span>');
 
+
+// ---- Non-technical visual mockups (no code needed to understand them) ----
+const ICONS = {
+  lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  return: '<path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',
+  truck: '<path d="M2 6h11v10H2z"/><path d="M13 9h4l4 4v3h-8z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>',
+  card: '<rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/>',
+  chat: '<path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1.2-4.5A8 8 0 1 1 21 12z"/>',
+  star: '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+  image: '<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/>',
+  zoom: '<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/>',
+  ruler: '<path d="M3 17 17 3l4 4L7 21z"/><path d="m8 12 2 2M11 9l2 2M14 6l2 2"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  bag: '<path d="M5 8h14l-1 12H6z"/><path d="M9 8a3 3 0 0 1 6 0"/>',
+};
+const icon = (name, size = 40) =>
+  `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[name] || ICONS.star}</svg>`;
+const clip = (t, n) => esc(String(t ?? '').slice(0, n));
+
+function pageHtml(v) {
+  const h = String(v.highlight || 'button');
+  const on = (k) => (h === k ? ' hl' : '');
+  const btnHl = h === 'button' || h === 'thumb' ? ' hl' : '';
+  const note = v.note ? `<span class="chip">${clip(v.note, 26)}</span>` : '';
+  const reviews = `<div class="pg-stars${on('reviews')}">★★★★★ <small>Verified reviews</small></div>`;
+  return `<div class="vis page">
+    <div class="pg-h"><i></i><i></i><i></i><span>yourstore.com</span></div>
+    <div class="pg-b${h === 'sticky' ? ' st' : ''}">
+      <div class="pg-img">${icon('bag', 84)}</div>
+      <div class="pg-info">
+        <div class="pg-line"></div>
+        <div class="pg-price${on('price')}">$29</div>
+        ${reviews}
+        <div class="pg-btn${btnHl}">Add to cart${h === 'thumb' ? '<span class="tap"></span>' : ''}</div>
+        <div class="pg-note${on('shipping')}">Delivery and returns info</div>
+      </div>
+    </div>
+    ${h === 'sticky' ? '<div class="pg-sticky hl">Add to cart</div>' : ''}
+    ${note ? `<div class="pg-chip">${note}</div>` : ''}
+  </div>`;
+}
+
+function compareHtml(v) {
+  const card = (c, good) => `<div class="cmp-card${good ? ' good' : ''}">
+      <div class="cmp-l">${clip(c?.label, 22)}</div>
+      ${c?.button ? `<div class="cmp-btn${good ? ' good' : ''}">${clip(c.button, 26)}</div>` : ''}
+      ${c?.text ? `<div class="cmp-t">${clip(c.text, 60)}</div>` : ''}
+    </div>`;
+  return `<div class="vis cmp">${card(v.left, false)}<span class="cmp-mid">${clip(v.link || '→', 2)}</span>${card(v.right, true)}</div>`;
+}
+
+function badgesHtml(v) {
+  const items = v.items.slice(0, 3).map((b) => `<div class="bdg"><span>${icon(b.icon, 44)}</span><b>${clip(b.label, 22)}</b></div>`).join('');
+  return `<div class="vis bdgs">${items}</div>`;
+}
+
+function galleryHtml(v) {
+  const items = v.items.slice(0, 4).map((b) => `<div class="tile"><span>${icon(b.icon, 56)}</span><b>${clip(b.label, 18)}</b></div>`).join('');
+  return `<div class="vis gal">${items}</div>`;
+}
+
+function speedHtml(v) {
+  const row = (r, slow) => `<div class="spd-r"><span class="spd-l">${clip(r?.label, 22)}</span><div class="spd-t"><div class="spd-f${slow ? ' slow' : ''}"></div></div><b class="spd-x">${clip(r?.text, 8)}</b></div>`;
+  return `<div class="vis spd"><div class="spd-title">Page load time</div>${row(v.before, true)}${row(v.after, false)}</div>`;
+}
+
+function togglesHtml(v) {
+  const rows = v.items.slice(0, 4).map((r) => `<div class="tg"><span>${clip(r.label, 30)}</span><i class="sw${r.on ? ' on' : ''}"><u></u></i></div>`).join('');
+  return `<div class="vis tgs">${rows}</div>`;
+}
+
 function visualHtml(v) {
   if (!v || typeof v !== 'object') return '';
+  if (v.type === 'page') return pageHtml(v);
+  if (v.type === 'compare' && v.left && v.right) return compareHtml(v);
+  if (v.type === 'badges' && Array.isArray(v.items) && v.items.length) return badgesHtml(v);
+  if (v.type === 'gallery' && Array.isArray(v.items) && v.items.length) return galleryHtml(v);
+  if (v.type === 'speed' && v.before && v.after) return speedHtml(v);
+  if (v.type === 'toggles' && Array.isArray(v.items) && v.items.length) return togglesHtml(v);
   if (v.type === 'code' && Array.isArray(v.lines) && v.lines.length) {
     const lines = v.lines.slice(0, 5).map((l, n) => `<div class="ln"><b>${String(n + 1).padStart(2, '0')}</b><span>${highlight(String(l).slice(0, 48))}</span></div>`).join('');
     return `<div class="vis win"><div class="win-h"><i></i><i></i><i></i><span>${esc(String(v.file || 'snippet').slice(0, 40))}</span></div><div class="win-b">${lines}</div></div>`;

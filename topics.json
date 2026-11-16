@@ -21,41 +21,38 @@
           "title": "Keep the buy button in reach on mobile",
           "body": "Shoppers should not hunt for it. A sticky add to cart keeps the action one tap away.",
           "visual": {
-            "type": "code",
-            "file": "assets/theme.css",
-            "lines": [
-              ".product-form__submit-sticky {",
-              "  position: sticky;",
-              "  bottom: 0;",
-              "  z-index: 10;",
-              "}"
-            ]
+            "type": "page",
+            "highlight": "sticky",
+            "note": "Always visible"
           }
         },
         {
           "title": "Show proof next to the button",
           "body": "Ratings and short reviews near add to cart build trust right at the moment of decision.",
           "visual": {
-            "type": "checklist",
-            "items": [
-              "Star rating under the title",
-              "2-3 short reviews",
-              "Secure checkout badges"
-            ]
+            "type": "page",
+            "highlight": "reviews",
+            "note": "Trust at the click"
           }
         },
         {
           "title": "Answer shipping questions early",
           "body": "State delivery and returns info under the button. It removes last-second doubt.",
           "visual": {
-            "type": "code",
-            "file": "sections/main-product.liquid",
-            "lines": [
-              "{%- if block.settings.note != blank -%}",
-              "  <p class=\"shipping-note\">",
-              "    {{ block.settings.note }}",
-              "  </p>",
-              "{%- endif -%}"
+            "type": "badges",
+            "items": [
+              {
+                "icon": "truck",
+                "label": "Delivery info"
+              },
+              {
+                "icon": "return",
+                "label": "Easy returns"
+              },
+              {
+                "icon": "lock",
+                "label": "Secure payment"
+              }
             ]
           }
         },
@@ -63,12 +60,24 @@
           "title": "Use images that actually sell",
           "body": "Mix lifestyle photos, a close-up and a size reference. Show the product in use.",
           "visual": {
-            "type": "checklist",
+            "type": "gallery",
             "items": [
-              "Lifestyle shot",
-              "Close-up detail",
-              "Size reference",
-              "Compressed WebP"
+              {
+                "icon": "image",
+                "label": "Lifestyle"
+              },
+              {
+                "icon": "zoom",
+                "label": "Close-up"
+              },
+              {
+                "icon": "ruler",
+                "label": "Size guide"
+              },
+              {
+                "icon": "user",
+                "label": "In use"
+              }
             ]
           }
         },
@@ -76,12 +85,15 @@
           "title": "Lazy load below-the-fold images",
           "body": "Keep the first image eager and lazy load the rest so the page loads faster.",
           "visual": {
-            "type": "code",
-            "file": "snippets/product-image.liquid",
-            "lines": [
-              "{{ image | image_url: width: 800",
-              "  | image_tag: loading: 'lazy' }}"
-            ]
+            "type": "speed",
+            "before": {
+              "label": "Heavy images",
+              "text": "Slow"
+            },
+            "after": {
+              "label": "Optimised images",
+              "text": "Fast"
+            }
           }
         },
         {
@@ -125,38 +137,49 @@
           "title": "Match the ad to the landing page",
           "body": "If the ad promises a deal, the page must show it right away. A mismatch makes people leave.",
           "visual": {
-            "type": "checklist",
-            "items": [
-              "Same offer as the ad",
-              "Same product shown",
-              "Clear headline above the fold"
-            ]
+            "type": "compare",
+            "left": {
+              "label": "The ad",
+              "text": "Your best offer"
+            },
+            "right": {
+              "label": "Landing page",
+              "text": "Same offer, same product"
+            },
+            "link": "="
           }
         },
         {
           "title": "Fix your mobile layout first",
           "body": "Much of your traffic is on phones. Test tap targets, text size and the cart flow on a real device.",
           "visual": {
-            "type": "code",
-            "file": "assets/theme.css",
-            "lines": [
-              ".button,",
-              ".product-form__submit {",
-              "  min-height: 48px;",
-              "  font-size: 16px;",
-              "}"
-            ]
+            "type": "page",
+            "highlight": "thumb",
+            "note": "Easy to tap"
           }
         },
         {
           "title": "Cut the clutter on product pages",
           "body": "One clear action beats ten options. Remove popups and banners that compete with add to cart.",
           "visual": {
-            "type": "checklist",
+            "type": "toggles",
             "items": [
-              "One main button",
-              "Fewer popups",
-              "Short variant picker"
+              {
+                "label": "Newsletter popup",
+                "on": false
+              },
+              {
+                "label": "Spin-to-win wheel",
+                "on": false
+              },
+              {
+                "label": "Extra banners",
+                "on": false
+              },
+              {
+                "label": "Add to cart button",
+                "on": true
+              }
             ]
           }
         },
@@ -164,24 +187,35 @@
           "title": "Speed up the page",
           "body": "Slow pages lose buyers. Remove unused apps and compress images before changing anything else.",
           "visual": {
-            "type": "checklist",
-            "items": [
-              "Delete unused apps",
-              "Compress images",
-              "Defer non-critical scripts"
-            ]
+            "type": "speed",
+            "before": {
+              "label": "Too many apps",
+              "text": "Slow"
+            },
+            "after": {
+              "label": "Lean store",
+              "text": "Fast"
+            }
           }
         },
         {
           "title": "Make checkout feel safe",
           "body": "Show payment icons, return info and a support contact near the cart and checkout.",
           "visual": {
-            "type": "code",
-            "file": "snippets/payment-icons.liquid",
-            "lines": [
-              "{%- for type in shop.enabled_payment_types -%}",
-              "  {{ type | payment_type_svg_tag }}",
-              "{%- endfor -%}"
+            "type": "badges",
+            "items": [
+              {
+                "icon": "lock",
+                "label": "Secure checkout"
+              },
+              {
+                "icon": "card",
+                "label": "Payment icons"
+              },
+              {
+                "icon": "chat",
+                "label": "Support contact"
+              }
             ]
           }
         },
@@ -226,47 +260,69 @@
           "title": "Start with decent hosting",
           "body": "Weak hosting caps your speed. Check server response time before tweaking anything else.",
           "visual": {
-            "type": "checklist",
-            "items": [
-              "Server response time",
-              "Current PHP version",
-              "Server-level caching"
-            ]
+            "type": "speed",
+            "before": {
+              "label": "Weak hosting",
+              "text": "Slow"
+            },
+            "after": {
+              "label": "Good hosting",
+              "text": "Fast"
+            }
           }
         },
         {
           "title": "Turn on page caching",
           "body": "Caching serves ready-made HTML instead of rebuilding every page on each visit.",
           "visual": {
-            "type": "code",
-            "file": "wp-config.php",
-            "lines": [
-              "// Let your cache plugin take over",
-              "define( 'WP_CACHE', true );"
-            ]
+            "type": "compare",
+            "left": {
+              "label": "No cache",
+              "text": "Page rebuilt on every visit"
+            },
+            "right": {
+              "label": "Cache on",
+              "text": "Ready-made page served instantly"
+            }
           }
         },
         {
           "title": "Compress and resize images",
           "body": "Serve WebP at the displayed size. Oversized images are a very common cause of slow pages.",
           "visual": {
-            "type": "checklist",
-            "items": [
-              "Convert to WebP",
-              "Resize to display size",
-              "Lazy load below the fold"
-            ]
+            "type": "compare",
+            "left": {
+              "label": "Oversized image",
+              "text": "Slow to load"
+            },
+            "right": {
+              "label": "Resized WebP",
+              "text": "Looks the same, loads fast"
+            }
           }
         },
         {
           "title": "Remove plugins you don't use",
           "body": "Every plugin can add scripts and queries. Delete unused ones instead of only deactivating them.",
           "visual": {
-            "type": "checklist",
+            "type": "toggles",
             "items": [
-              "Delete, don't deactivate",
-              "Replace heavy plugins",
-              "Test after each removal"
+              {
+                "label": "SEO plugin",
+                "on": true
+              },
+              {
+                "label": "Old slider plugin",
+                "on": false
+              },
+              {
+                "label": "Unused form plugin",
+                "on": false
+              },
+              {
+                "label": "Backup plugin",
+                "on": true
+              }
             ]
           }
         },
@@ -274,12 +330,11 @@
           "title": "Defer non-critical scripts",
           "body": "Load chat widgets and trackers after the page is usable, so the main content shows first.",
           "visual": {
-            "type": "code",
-            "file": "functions.php",
-            "lines": [
-              "wp_enqueue_script( 'my-script',",
-              "  get_theme_file_uri( 'app.js' ), array(),",
-              "  '1.0', array( 'strategy' => 'defer' ) );"
+            "type": "flow",
+            "steps": [
+              "Page",
+              "Content",
+              "Chat widget"
             ]
           }
         },
@@ -324,53 +379,53 @@
           "title": "Make it the clearest thing on the page",
           "body": "Use a high-contrast color no other element uses. The eye should land on it first.",
           "visual": {
-            "type": "code",
-            "file": "assets/theme.css",
-            "lines": [
-              ".product-form__submit {",
-              "  background: var(--accent);",
-              "  color: #fff;",
-              "}"
-            ]
+            "type": "page",
+            "highlight": "button",
+            "note": "Stands out"
           }
         },
         {
           "title": "Use specific button text",
           "body": "Add a clear price or state to the label and test it against your current text.",
           "visual": {
-            "type": "code",
-            "file": "sections/main-product.liquid",
-            "lines": [
-              "{%- if product.available -%}",
-              "  Add to cart · {{ product.price | money }}",
-              "{%- else -%}",
-              "  Sold out",
-              "{%- endif -%}"
-            ]
+            "type": "compare",
+            "left": {
+              "label": "Before",
+              "button": "Add to cart"
+            },
+            "right": {
+              "label": "After",
+              "button": "Add to cart · $29"
+            }
           }
         },
         {
           "title": "Make it easy to tap on mobile",
           "body": "Use a full-width button with plenty of space around it so it is easy to hit with a thumb.",
           "visual": {
-            "type": "code",
-            "file": "assets/theme.css",
-            "lines": [
-              "@media (max-width: 749px) {",
-              "  .product-form__submit { width: 100%; }",
-              "}"
-            ]
+            "type": "page",
+            "highlight": "thumb",
+            "note": "Thumb-friendly"
           }
         },
         {
           "title": "Add reassurance right under it",
           "body": "Small trust lines under the button reduce hesitation at the moment of the click.",
           "visual": {
-            "type": "checklist",
+            "type": "badges",
             "items": [
-              "Secure checkout",
-              "Easy returns",
-              "Delivery estimate"
+              {
+                "icon": "lock",
+                "label": "Secure checkout"
+              },
+              {
+                "icon": "return",
+                "label": "Easy returns"
+              },
+              {
+                "icon": "truck",
+                "label": "Delivery estimate"
+              }
             ]
           }
         },
@@ -378,15 +433,9 @@
           "title": "Keep it visible while scrolling",
           "body": "A sticky button on mobile keeps the action one tap away on long product pages.",
           "visual": {
-            "type": "code",
-            "file": "assets/theme.css",
-            "lines": [
-              ".sticky-atc {",
-              "  position: fixed;",
-              "  bottom: 0;",
-              "  inset-inline: 0;",
-              "}"
-            ]
+            "type": "page",
+            "highlight": "sticky",
+            "note": "Always visible"
           }
         },
         {

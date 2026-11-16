@@ -68,20 +68,34 @@ Rules:
 - Do not invent statistics.`;
 
   let text, lastErr;
-  for (const model of MODELS) {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { responseMimeType: 'application/json', temperature: 0.8 },
-      }),
-    });
-    const data = await res.json();
-    text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (text) { console.log('Model used:', model); break; }
-    lastErr = `${model}: ${JSON.stringify(data).slice(0, 300)}`;
-    console.warn('Model failed, trying next ->', lastErr);
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  outer: for (const model of MODELS) {
+    // Retry temporary errors (503 high demand, 429 rate limit, timeouts) with a growing wait
+    for (let attempt = 1; attempt <= 5; attempt++) {
+      let data, status = 0;
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { responseMimeType: 'application/json', temperature: 0.8 },
+          }),
+          signal: AbortSignal.timeout(90000),
+        });
+        status = res.status;
+        data = await res.json();
+      } catch (e) {
+        data = { error: { message: String(e) } };
+      }
+      text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (text) { console.log(`Model used: ${model} (attempt ${attempt})`); break outer; }
+      lastErr = `${model}: ${JSON.stringify(data).slice(0, 300)}`;
+      const temporary = status === 503 || status === 429 || status === 500 || status === 0;
+      console.warn(`Attempt ${attempt} failed ->`, lastErr);
+      if (!temporary) break; // 404 etc: move on to the next model
+      await sleep(attempt * 20000);
+    }
   }
   if (!text) throw new Error('Gemini returned no content. Last error: ' + lastErr);
   const out = JSON.parse(text);

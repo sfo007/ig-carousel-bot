@@ -6,7 +6,9 @@ import { chromium } from 'playwright';
 
 // ---- Edit these ----
 const HANDLE = '@salmanul.farisy_';
-const BRAND = { bg: '#0B1020', card: '#121A33', accent: '#7CFFB2', text: '#F4F6FF', muted: '#9AA4C7' };
+const NAME = 'Salmanul Farisy';
+const SITE = 'salmanulfarisy.com';
+const BRAND = { bg: '#0A0A0C', card: '#121214', line: '#232327', accent: '#74C0FF', text: '#EEEBE4', muted: '#8E8E95' };
 const MODEL = 'gemini-2.5-flash';
 const CTA_TEXT = 'DM "AUDIT" for a free quick review';
 // --------------------
@@ -84,17 +86,39 @@ const dir = path.posix.join('posts', `${date}-${slug}`);
 fs.mkdirSync(dir, { recursive: true });
 
 const tpl = fs.readFileSync('template.html', 'utf8');
-const dots = (i) => slides.map((_, j) => `<span class="dot${j === i ? ' on' : ''}"></span>`).join('');
+const bars = (i) => slides.map((_, j) => `<span class="bar${j === i ? ' on' : ''}"></span>`).join('');
+
+// Bundle fonts into the page so rendering is identical everywhere (no network needed)
+const fontFiles = [
+  ['Syne', 700, 'syne'], ['Syne', 800, 'syne'],
+  ['JetBrains Mono', 400, 'jetbrains-mono'], ['JetBrains Mono', 500, 'jetbrains-mono'],
+  ['Inter', 400, 'inter'], ['Inter', 500, 'inter'],
+];
+const FONTS = fontFiles
+  .map(([family, weight, pkg]) => {
+    const b64 = fs.readFileSync(`node_modules/@fontsource/${pkg}/files/${pkg}-latin-${weight}-normal.woff2`).toString('base64');
+    return `@font-face{font-family:'${family}';font-weight:${weight};src:url(data:font/woff2;base64,${b64}) format('woff2');}`;
+  })
+  .join('\n');
+
+// Title with an accent-coloured full stop, like the site headings
+const titleHtml = (t) => {
+  const clean = String(t).trim();
+  if (/[?!]$/.test(clean)) return esc(clean);
+  return esc(clean.replace(/[.:\s]+$/, '')) + '<span class="dot">.</span>';
+};
 
 function render(slide, i) {
   const type = i === 0 ? 'cover' : i === total - 1 ? 'cta' : 'content';
+  const label = type === 'cover' ? '/ New post' : type === 'cta' ? "/ Let's work together" : `/ Tip ${String(i).padStart(2, '0')}`;
   const map = {
-    BG: BRAND.bg, CARD: BRAND.card, ACCENT: BRAND.accent, TEXT: BRAND.text, MUTED: BRAND.muted,
-    HANDLE: esc(HANDLE), NUM: i + 1, TOTAL: total, TYPE: type,
-    NUMBER_BLOCK: type === 'content' ? `<div class="num">${String(i).padStart(2, '0')}</div>` : '',
-    TITLE: esc(slide.title), BODY: esc(slide.body),
+    FONTS, BG: BRAND.bg, CARD: BRAND.card, LINE: BRAND.line, ACCENT: BRAND.accent, TEXT: BRAND.text, MUTED: BRAND.muted,
+    NAME: esc(NAME), NUM: String(i + 1).padStart(2, '0'), TOTAL: String(total).padStart(2, '0'), TYPE: type,
+    LABEL: esc(label),
+    TITLE: titleHtml(slide.title), BODY: esc(slide.body),
     PILL: type === 'cta' ? `<span class="pill">Follow ${esc(HANDLE)}</span>` : '',
-    DOTS: dots(i),
+    SITE: type === 'cta' ? `<div class="site">${esc(SITE)}</div>` : '',
+    BARS: bars(i),
     SWIPE: i < total - 1 ? 'Swipe →' : '',
   };
   return tpl.replace(/\{\{(\w+)\}\}/g, (_, k) => (k in map ? map[k] : ''));

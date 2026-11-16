@@ -1,7 +1,7 @@
 [
   {
     "topic": "5 Shopify product page fixes that lift conversion rate",
-    "posted": false,
+    "posted": true,
     "content": {
       "slides": [
         {
@@ -113,7 +113,9 @@
         "productpage",
         "webdesign"
       ]
-    }
+    },
+    "postedAt": "2026-11-16T06:54:30.595Z",
+    "mediaId": "18132797626828407"
   },
   {
     "topic": "Why your Shopify store has traffic but no sales (CRO checklist)",

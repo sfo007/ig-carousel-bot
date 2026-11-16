@@ -17,7 +17,7 @@ const CTA_TEXT = 'DM "AUDIT" for a free quick review';
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 const topics = JSON.parse(fs.readFileSync('topics.json', 'utf8'));
-const next = topics.find((t) => !t.posted);
+const next = process.env.TOPIC_INDEX ? topics[Number(process.env.TOPIC_INDEX)] : topics.find((t) => !t.posted);
 if (!next) {
   console.error('No unposted topics left. Add more to topics.json');
   process.exit(1);
@@ -26,6 +26,8 @@ const topic = next.topic;
 console.log('Topic:', topic);
 
 async function writeContent() {
+  // Prewritten content in topics.json is used as-is (no AI call needed)
+  if (next.content) return next.content;
   if (process.env.MOCK) {
     return {
       slides: [
@@ -71,7 +73,7 @@ Rules:
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   outer: for (const model of MODELS) {
     // Retry temporary errors (503 high demand, 429 rate limit, timeouts) with a growing wait
-    for (let attempt = 1; attempt <= 5; attempt++) {
+    for (let attempt = 1; attempt <= 3; attempt++) {
       let data, status = 0;
       try {
         const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
@@ -81,7 +83,7 @@ Rules:
             contents: [{ parts: [{ text: prompt }] }],
             generationConfig: { responseMimeType: 'application/json', temperature: 0.8 },
           }),
-          signal: AbortSignal.timeout(90000),
+          signal: AbortSignal.timeout(45000),
         });
         status = res.status;
         data = await res.json();

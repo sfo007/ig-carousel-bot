@@ -1,16 +1,451 @@
 [
-  { "topic": "5 Shopify product page fixes that lift conversion rate", "posted": false },
-  { "topic": "Why your Shopify store has traffic but no sales (CRO checklist)", "posted": false },
-  { "topic": "7 WordPress speed fixes that actually move Core Web Vitals", "posted": false },
-  { "topic": "Shopify add-to-cart button: 6 changes that increase clicks", "posted": false },
-  { "topic": "Mobile checkout mistakes killing your Shopify sales", "posted": false },
-  { "topic": "WooCommerce to Shopify migration: what to check before you switch", "posted": false },
-  { "topic": "How to write product descriptions that convert", "posted": false },
-  { "topic": "Trust signals every Shopify store needs above the fold", "posted": false },
-  { "topic": "WordPress plugins you should delete today (speed and security)", "posted": false },
-  { "topic": "Shopify theme speed: 6 things slowing your store down", "posted": false },
-  { "topic": "A/B testing basics for small Shopify stores", "posted": false },
-  { "topic": "Cart abandonment: 5 quick wins for Shopify stores", "posted": false },
-  { "topic": "Shopify vs WordPress (WooCommerce): which should you pick?", "posted": false },
-  { "topic": "Homepage CRO: the 5 sections that matter most", "posted": false }
+  {
+    "topic": "5 Shopify product page fixes that lift conversion rate",
+    "posted": false,
+    "content": {
+      "slides": [
+        {
+          "title": "Your product page is leaking sales",
+          "body": "5 fixes to check on yours today.",
+          "visual": {
+            "type": "flow",
+            "steps": [
+              "Visitor",
+              "Product page",
+              "Cart",
+              "Sale"
+            ]
+          }
+        },
+        {
+          "title": "Keep the buy button in reach on mobile",
+          "body": "Shoppers should not hunt for it. A sticky add to cart keeps the action one tap away.",
+          "visual": {
+            "type": "code",
+            "file": "assets/theme.css",
+            "lines": [
+              ".product-form__submit-sticky {",
+              "  position: sticky;",
+              "  bottom: 0;",
+              "  z-index: 10;",
+              "}"
+            ]
+          }
+        },
+        {
+          "title": "Show proof next to the button",
+          "body": "Ratings and short reviews near add to cart build trust right at the moment of decision.",
+          "visual": {
+            "type": "checklist",
+            "items": [
+              "Star rating under the title",
+              "2-3 short reviews",
+              "Secure checkout badges"
+            ]
+          }
+        },
+        {
+          "title": "Answer shipping questions early",
+          "body": "State delivery and returns info under the button. It removes last-second doubt.",
+          "visual": {
+            "type": "code",
+            "file": "sections/main-product.liquid",
+            "lines": [
+              "{%- if block.settings.note != blank -%}",
+              "  <p class=\"shipping-note\">",
+              "    {{ block.settings.note }}",
+              "  </p>",
+              "{%- endif -%}"
+            ]
+          }
+        },
+        {
+          "title": "Use images that actually sell",
+          "body": "Mix lifestyle photos, a close-up and a size reference. Show the product in use.",
+          "visual": {
+            "type": "checklist",
+            "items": [
+              "Lifestyle shot",
+              "Close-up detail",
+              "Size reference",
+              "Compressed WebP"
+            ]
+          }
+        },
+        {
+          "title": "Lazy load below-the-fold images",
+          "body": "Keep the first image eager and lazy load the rest so the page loads faster.",
+          "visual": {
+            "type": "code",
+            "file": "snippets/product-image.liquid",
+            "lines": [
+              "{{ image | image_url: width: 800",
+              "  | image_tag: loading: 'lazy' }}"
+            ]
+          }
+        },
+        {
+          "title": "Need help with your store?",
+          "body": "DM \"AUDIT\" for a free quick review",
+          "visual": null
+        }
+      ],
+      "caption": "Most Shopify stores don't have a traffic problem, they have a product page problem.\n\nSave this and run through it on your own store. Small fixes here usually beat more ad spend.\n\nWhich of these is your store missing?",
+      "hashtags": [
+        "shopify",
+        "shopifydeveloper",
+        "cro",
+        "conversionrateoptimization",
+        "ecommerce",
+        "shopifystore",
+        "productpage",
+        "webdesign"
+      ]
+    }
+  },
+  {
+    "topic": "Why your Shopify store has traffic but no sales (CRO checklist)",
+    "posted": false,
+    "content": {
+      "slides": [
+        {
+          "title": "Traffic but no sales?",
+          "body": "Check these 5 things before buying more ads.",
+          "visual": {
+            "type": "flow",
+            "steps": [
+              "Ad",
+              "Landing",
+              "Product",
+              "Checkout"
+            ]
+          }
+        },
+        {
+          "title": "Match the ad to the landing page",
+          "body": "If the ad promises a deal, the page must show it right away. A mismatch makes people leave.",
+          "visual": {
+            "type": "checklist",
+            "items": [
+              "Same offer as the ad",
+              "Same product shown",
+              "Clear headline above the fold"
+            ]
+          }
+        },
+        {
+          "title": "Fix your mobile layout first",
+          "body": "Much of your traffic is on phones. Test tap targets, text size and the cart flow on a real device.",
+          "visual": {
+            "type": "code",
+            "file": "assets/theme.css",
+            "lines": [
+              ".button,",
+              ".product-form__submit {",
+              "  min-height: 48px;",
+              "  font-size: 16px;",
+              "}"
+            ]
+          }
+        },
+        {
+          "title": "Cut the clutter on product pages",
+          "body": "One clear action beats ten options. Remove popups and banners that compete with add to cart.",
+          "visual": {
+            "type": "checklist",
+            "items": [
+              "One main button",
+              "Fewer popups",
+              "Short variant picker"
+            ]
+          }
+        },
+        {
+          "title": "Speed up the page",
+          "body": "Slow pages lose buyers. Remove unused apps and compress images before changing anything else.",
+          "visual": {
+            "type": "checklist",
+            "items": [
+              "Delete unused apps",
+              "Compress images",
+              "Defer non-critical scripts"
+            ]
+          }
+        },
+        {
+          "title": "Make checkout feel safe",
+          "body": "Show payment icons, return info and a support contact near the cart and checkout.",
+          "visual": {
+            "type": "code",
+            "file": "snippets/payment-icons.liquid",
+            "lines": [
+              "{%- for type in shop.enabled_payment_types -%}",
+              "  {{ type | payment_type_svg_tag }}",
+              "{%- endfor -%}"
+            ]
+          }
+        },
+        {
+          "title": "Need help with your store?",
+          "body": "DM \"AUDIT\" for a free quick review",
+          "visual": null
+        }
+      ],
+      "caption": "If people visit but don't buy, more traffic won't fix it.\n\nGo through this checklist on your own store before spending more on ads. Most leaks are in the same few places.\n\nWhere does your store lose people the most?",
+      "hashtags": [
+        "shopify",
+        "cro",
+        "conversionrate",
+        "shopifyexpert",
+        "ecommercetips",
+        "shopifydeveloper",
+        "onlinestore",
+        "digitalmarketing"
+      ]
+    }
+  },
+  {
+    "topic": "5 WordPress speed fixes that actually move Core Web Vitals",
+    "posted": false,
+    "content": {
+      "slides": [
+        {
+          "title": "Slow WordPress site?",
+          "body": "5 fixes that help Core Web Vitals.",
+          "visual": {
+            "type": "flow",
+            "steps": [
+              "Hosting",
+              "Theme",
+              "Plugins",
+              "Images"
+            ]
+          }
+        },
+        {
+          "title": "Start with decent hosting",
+          "body": "Weak hosting caps your speed. Check server response time before tweaking anything else.",
+          "visual": {
+            "type": "checklist",
+            "items": [
+              "Server response time",
+              "Current PHP version",
+              "Server-level caching"
+            ]
+          }
+        },
+        {
+          "title": "Turn on page caching",
+          "body": "Caching serves ready-made HTML instead of rebuilding every page on each visit.",
+          "visual": {
+            "type": "code",
+            "file": "wp-config.php",
+            "lines": [
+              "// Let your cache plugin take over",
+              "define( 'WP_CACHE', true );"
+            ]
+          }
+        },
+        {
+          "title": "Compress and resize images",
+          "body": "Serve WebP at the displayed size. Oversized images are a very common cause of slow pages.",
+          "visual": {
+            "type": "checklist",
+            "items": [
+              "Convert to WebP",
+              "Resize to display size",
+              "Lazy load below the fold"
+            ]
+          }
+        },
+        {
+          "title": "Remove plugins you don't use",
+          "body": "Every plugin can add scripts and queries. Delete unused ones instead of only deactivating them.",
+          "visual": {
+            "type": "checklist",
+            "items": [
+              "Delete, don't deactivate",
+              "Replace heavy plugins",
+              "Test after each removal"
+            ]
+          }
+        },
+        {
+          "title": "Defer non-critical scripts",
+          "body": "Load chat widgets and trackers after the page is usable, so the main content shows first.",
+          "visual": {
+            "type": "code",
+            "file": "functions.php",
+            "lines": [
+              "wp_enqueue_script( 'my-script',",
+              "  get_theme_file_uri( 'app.js' ), array(),",
+              "  '1.0', array( 'strategy' => 'defer' ) );"
+            ]
+          }
+        },
+        {
+          "title": "Need help with your store?",
+          "body": "DM \"AUDIT\" for a free quick review",
+          "visual": null
+        }
+      ],
+      "caption": "A slow WordPress site costs you rankings and sales.\n\nThese 5 fixes are where I'd start before touching anything fancy. Save this for your next speed audit.\n\nWhat's the slowest part of your site right now?",
+      "hashtags": [
+        "wordpress",
+        "wordpressdeveloper",
+        "webperformance",
+        "corewebvitals",
+        "pagespeed",
+        "wordpresstips",
+        "websitespeed",
+        "webdevelopment"
+      ]
+    }
+  },
+  {
+    "topic": "Shopify add-to-cart button: 5 changes that increase clicks",
+    "posted": false,
+    "content": {
+      "slides": [
+        {
+          "title": "Small button changes, more clicks",
+          "body": "5 things to test on your add to cart.",
+          "visual": {
+            "type": "flow",
+            "steps": [
+              "Product",
+              "Add to cart",
+              "Cart",
+              "Pay"
+            ]
+          }
+        },
+        {
+          "title": "Make it the clearest thing on the page",
+          "body": "Use a high-contrast color no other element uses. The eye should land on it first.",
+          "visual": {
+            "type": "code",
+            "file": "assets/theme.css",
+            "lines": [
+              ".product-form__submit {",
+              "  background: var(--accent);",
+              "  color: #fff;",
+              "}"
+            ]
+          }
+        },
+        {
+          "title": "Use specific button text",
+          "body": "Add a clear price or state to the label and test it against your current text.",
+          "visual": {
+            "type": "code",
+            "file": "sections/main-product.liquid",
+            "lines": [
+              "{%- if product.available -%}",
+              "  Add to cart · {{ product.price | money }}",
+              "{%- else -%}",
+              "  Sold out",
+              "{%- endif -%}"
+            ]
+          }
+        },
+        {
+          "title": "Make it easy to tap on mobile",
+          "body": "Use a full-width button with plenty of space around it so it is easy to hit with a thumb.",
+          "visual": {
+            "type": "code",
+            "file": "assets/theme.css",
+            "lines": [
+              "@media (max-width: 749px) {",
+              "  .product-form__submit { width: 100%; }",
+              "}"
+            ]
+          }
+        },
+        {
+          "title": "Add reassurance right under it",
+          "body": "Small trust lines under the button reduce hesitation at the moment of the click.",
+          "visual": {
+            "type": "checklist",
+            "items": [
+              "Secure checkout",
+              "Easy returns",
+              "Delivery estimate"
+            ]
+          }
+        },
+        {
+          "title": "Keep it visible while scrolling",
+          "body": "A sticky button on mobile keeps the action one tap away on long product pages.",
+          "visual": {
+            "type": "code",
+            "file": "assets/theme.css",
+            "lines": [
+              ".sticky-atc {",
+              "  position: fixed;",
+              "  bottom: 0;",
+              "  inset-inline: 0;",
+              "}"
+            ]
+          }
+        },
+        {
+          "title": "Need help with your store?",
+          "body": "DM \"AUDIT\" for a free quick review",
+          "visual": null
+        }
+      ],
+      "caption": "Your add to cart button is the most important button in your store.\n\nTest one change at a time and watch what happens to your add to cart rate.\n\nWhich of these have you already tried?",
+      "hashtags": [
+        "shopify",
+        "shopifytips",
+        "cro",
+        "addtocart",
+        "ecommerce",
+        "shopifydeveloper",
+        "uxdesign",
+        "conversionrate"
+      ]
+    }
+  },
+  {
+    "topic": "How to write product descriptions that convert",
+    "posted": false
+  },
+  {
+    "topic": "Trust signals every Shopify store needs above the fold",
+    "posted": false
+  },
+  {
+    "topic": "WordPress plugins you should delete today (speed and security)",
+    "posted": false
+  },
+  {
+    "topic": "Shopify theme speed: 6 things slowing your store down",
+    "posted": false
+  },
+  {
+    "topic": "Mobile checkout mistakes killing your Shopify sales",
+    "posted": false
+  },
+  {
+    "topic": "WooCommerce to Shopify migration: what to check before you switch",
+    "posted": false
+  },
+  {
+    "topic": "A/B testing basics for small Shopify stores",
+    "posted": false
+  },
+  {
+    "topic": "Cart abandonment: 5 quick wins for Shopify stores",
+    "posted": false
+  },
+  {
+    "topic": "Shopify vs WordPress (WooCommerce): which should you pick?",
+    "posted": false
+  },
+  {
+    "topic": "Homepage CRO: the 5 sections that matter most",
+    "posted": false
+  }
 ]

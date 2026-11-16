@@ -25,11 +25,29 @@
   h1 .dot { color:var(--accent); }
   p { color:var(--muted); line-height:1.45; }
   .cover h1 { font-size:92px; letter-spacing:-3px; }
-  .cover p { font-size:42px; margin-top:48px; }
+  .cover p { font-size:42px; margin-top:40px; }
   .content h1 { font-size:68px; }
-  .content p { margin-top:52px; background:var(--card); border:1px solid var(--line); border-radius:40px; padding:52px; font-size:40px; color:var(--text); opacity:.92; }
+  .content p { margin-top:40px; background:var(--card); border:1px solid var(--line); border-radius:36px; padding:40px 44px; font-size:36px; color:var(--text); opacity:.92; }
   .cta h1 { font-size:88px; letter-spacing:-3px; }
   .cta p { font-size:42px; margin-top:44px; }
+  .vis { margin-top:36px; }
+  .win { background:var(--card); border:1px solid var(--line); border-radius:32px; overflow:hidden; }
+  .win-h { display:flex; align-items:center; gap:12px; padding:20px 28px; border-bottom:1px solid var(--line); }
+  .win-h i { width:14px; height:14px; border-radius:50%; background:#2c2c31; }
+  .win-h span { font-family:'JetBrains Mono',monospace; font-size:22px; color:var(--muted); margin-left:10px; }
+  .win-b { padding:24px 28px; font-family:'JetBrains Mono',monospace; font-size:25px; line-height:1.7; color:var(--text); }
+  .ln { display:flex; gap:24px; white-space:pre; }
+  .ln b { color:#55555c; font-weight:400; width:32px; flex:none; }
+  .acc { color:var(--accent); }
+  .tag { color:#bdb9ae; }
+  .chk { display:flex; flex-direction:column; gap:14px; }
+  .chk > div { display:flex; align-items:center; gap:22px; background:var(--card); border:1px solid var(--line); border-radius:26px; padding:20px 28px; font-size:32px; }
+  .tick { width:40px; height:40px; border-radius:50%; background:var(--accent); color:var(--bg); display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:700; flex:none; }
+  .flow { display:flex; align-items:center; flex-wrap:wrap; gap:14px; }
+  .step { padding:18px 28px; border:1px solid var(--line); background:var(--card); border-radius:100px; font-family:'JetBrains Mono',monospace; font-size:24px; letter-spacing:2px; text-transform:uppercase; }
+  .step.last { background:var(--accent); color:var(--bg); border-color:var(--accent); }
+  .arr { color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:28px; }
+  .chips-l { font-family:'JetBrains Mono',monospace; font-size:22px; letter-spacing:4px; color:var(--muted); text-transform:uppercase; margin-bottom:18px; }
   .pill { align-self:flex-start; margin-top:56px; padding:28px 52px; background:var(--accent); color:var(--bg); font-family:'JetBrains Mono',monospace; font-weight:500; font-size:30px; letter-spacing:3px; text-transform:uppercase; border-radius:100px; }
   .site { margin-top:34px; font-size:26px; letter-spacing:4px; color:var(--muted); }
   .bottom { display:flex; justify-content:space-between; align-items:center; min-height:40px; }
@@ -50,6 +68,7 @@
       <div class="label">{{LABEL}}</div>
       <h1>{{TITLE}}</h1>
       <p>{{BODY}}</p>
+      {{VISUAL}}
       {{PILL}}
       {{SITE}}
     </div>

@@ -28,12 +28,12 @@ async function writeContent() {
   if (process.env.MOCK) {
     return {
       slides: [
-        { title: 'Your product page is leaking sales', body: 'Fix these 5 things first.' },
-        { title: 'Show the price and CTA above the fold', body: 'Shoppers should not scroll to buy. Keep price, variant picker and add to cart visible on mobile.' },
-        { title: 'Use real photos, not just renders', body: 'Add 5-7 images including lifestyle shots and one close-up. Compress them to stay fast.' },
-        { title: 'Put reviews near the button', body: 'Social proof right beside add to cart beats a review section buried at the bottom.' },
-        { title: 'Make shipping and returns obvious', body: 'State delivery time and return policy under the button to remove last-second doubt.' },
-        { title: 'Speed up the page', body: 'Every extra second costs conversions. Lazy load below-fold images and remove unused apps.' },
+        { title: 'Your product page is leaking sales', body: 'Fix these 5 things first.', visual: { type: 'flow', steps: ['Visitor', 'Product page', 'Cart', 'Sale'] } },
+        { title: 'Keep the buy button above the fold', body: 'Shoppers should not scroll to buy. Keep price, variants and add to cart visible on mobile.', visual: { type: 'code', file: 'sections/main-product.liquid', lines: ['<div class="product-buy sticky-top">', '  {{ product.price | money }}', '  {% render \'variant-picker\' %}', '  <button type="submit">Add to cart</button>', '</div>'] } },
+        { title: 'Use real photos, not just renders', body: 'Add 5-7 images including lifestyle shots and one close-up. Compress them to stay fast.', visual: { type: 'checklist', items: ['Lifestyle shots', 'One close-up detail', 'Size and scale photo', 'Compressed WebP'] } },
+        { title: 'Put reviews near the button', body: 'Social proof right beside add to cart beats a review section buried at the bottom.', visual: { type: 'code', file: 'sections/main-product.liquid', lines: ['{% render \'star-rating\', product: product %}', '<button type="submit">Add to cart</button>'] } },
+        { title: 'Make shipping and returns obvious', body: 'State delivery time and return policy under the button to remove last-second doubt.', visual: { type: 'checklist', items: ['Delivery time', 'Free returns window', 'Secure checkout badge'] } },
+        { title: 'Speed up the page', body: 'Every extra second costs conversions. Lazy load below-fold images and remove unused apps.', visual: { type: 'code', file: 'snippets/product-image.liquid', lines: ['{{ image | image_url: width: 800 | image_tag:', "   loading: 'lazy', sizes: '(min-width: 750px) 50vw, 100vw' }}"] } },
         { title: 'Need help with your store?', body: CTA_TEXT },
       ],
       caption: 'Most Shopify stores do not have a traffic problem, they have a conversion problem.\n\nSave this and run through it on your own product page.\n\nWhich of these are you missing?',
@@ -49,7 +49,13 @@ Topic: "${topic}"
 Audience: online store owners and marketers.
 
 Return ONLY JSON in this shape:
-{"slides":[{"title":"","body":""}],"caption":"","hashtags":[]}
+{"slides":[{"title":"","body":"","visual":null}],"caption":"","hashtags":[]}
+
+Each slide except the last has a "visual", one of:
+{"type":"code","file":"sections/main-product.liquid","lines":["..."]}  - a short, correct, realistic snippet (2-5 lines, max 44 characters per line) that illustrates the tip. Use real Shopify Liquid, HTML, CSS or WordPress PHP only. Never invent functions, settings or APIs.
+{"type":"checklist","items":["..."]}  - 3-4 items, max 26 characters each.
+{"type":"flow","steps":["..."]}  - 3-4 steps, max 14 characters each (e.g. a funnel or process).
+Use "code" when the tip can be shown in code. Otherwise use "checklist". Use "flow" for the hook slide. The last slide has "visual": null.
 
 Rules:
 - Exactly 7 slides.
@@ -101,6 +107,30 @@ const FONTS = fontFiles
   })
   .join('\n');
 
+// Small topic visuals (code window, checklist, funnel flow)
+const highlight = (line) =>
+  esc(line)
+    .replace(/(\{\{.*?\}\}|\{%.*?%\})/g, '<span class="acc">$1</span>')
+    .replace(/(&lt;\/?[a-zA-Z][^&]*?&gt;)/g, '<span class="tag">$1</span>');
+
+function visualHtml(v) {
+  if (!v || typeof v !== 'object') return '';
+  if (v.type === 'code' && Array.isArray(v.lines) && v.lines.length) {
+    const lines = v.lines.slice(0, 5).map((l, n) => `<div class="ln"><b>${String(n + 1).padStart(2, '0')}</b><span>${highlight(String(l).slice(0, 48))}</span></div>`).join('');
+    return `<div class="vis win"><div class="win-h"><i></i><i></i><i></i><span>${esc(String(v.file || 'snippet').slice(0, 40))}</span></div><div class="win-b">${lines}</div></div>`;
+  }
+  if (v.type === 'checklist' && Array.isArray(v.items) && v.items.length) {
+    const items = v.items.slice(0, 4).map((t) => `<div><span class="tick">✓</span>${esc(String(t).slice(0, 34))}</div>`).join('');
+    return `<div class="vis chk">${items}</div>`;
+  }
+  if (v.type === 'flow' && Array.isArray(v.steps) && v.steps.length > 1) {
+    const st = v.steps.slice(0, 4);
+    const items = st.map((t, n) => `<span class="step${n === st.length - 1 ? ' last' : ''}">${esc(String(t).slice(0, 18))}</span>`).join('<span class="arr">→</span>');
+    return `<div class="vis flow">${items}</div>`;
+  }
+  return '';
+}
+
 // Title with an accent-coloured full stop, like the site headings
 const titleHtml = (t) => {
   const clean = String(t).trim();
@@ -116,6 +146,9 @@ function render(slide, i) {
     NAME: esc(NAME), NUM: String(i + 1).padStart(2, '0'), TOTAL: String(total).padStart(2, '0'), TYPE: type,
     LABEL: esc(label),
     TITLE: titleHtml(slide.title), BODY: esc(slide.body),
+    VISUAL: type === 'cta'
+      ? `<div class="vis"><div class="chips-l">Builds on</div><div class="flow"><span class="step">Shopify</span><span class="step">WordPress</span><span class="step">Webflow</span></div></div>`
+      : visualHtml(slide.visual),
     PILL: type === 'cta' ? `<span class="pill">Follow ${esc(HANDLE)}</span>` : '',
     SITE: type === 'cta' ? `<div class="site">${esc(SITE)}</div>` : '',
     BARS: bars(i),

@@ -119,7 +119,7 @@
   },
   {
     "topic": "Why your Shopify store has traffic but no sales (CRO checklist)",
-    "posted": false,
+    "posted": true,
     "content": {
       "slides": [
         {
@@ -238,7 +238,9 @@
         "onlinestore",
         "digitalmarketing"
       ]
-    }
+    },
+    "postedAt": "2026-11-17T21:13:05.732Z",
+    "mediaId": "17895946401684124"
   },
   {
     "topic": "5 WordPress speed fixes that actually move Core Web Vitals",

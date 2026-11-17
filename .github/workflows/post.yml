@@ -4,6 +4,10 @@ on:
   schedule:
     # Tuesday and Friday at 12:30 UTC = 6:00 PM IST
     - cron: "30 12 * * 2,5"
+    # Backup attempts: GitHub sometimes drops or delays scheduled runs.
+    # The script skips these if the post already went out today.
+    - cron: "30 14 * * 2,5"
+    - cron: "30 16 * * 2,5"
   workflow_dispatch:
     inputs:
       dry_run:
@@ -38,11 +42,13 @@ jobs:
         run: node check-topics.js
 
       - name: Generate slides
+        id: gen
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: node generate.js
 
       - name: Commit slides (so Instagram can fetch the images)
+        if: steps.gen.outputs.skip != 'true'
         run: |
           git config user.name "carousel-bot"
           git config user.email "carousel-bot@users.noreply.github.com"
@@ -51,6 +57,7 @@ jobs:
           git push
 
       - name: Publish to Instagram
+        if: steps.gen.outputs.skip != 'true'
         env:
           IG_TOKEN: ${{ secrets.IG_TOKEN }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
@@ -58,6 +65,7 @@ jobs:
         run: node publish.js
 
       - name: Mark topic as posted
+        if: steps.gen.outputs.skip != 'true'
         run: |
           git add topics.json
           git commit -m "Mark topic as posted" || echo "nothing to commit"

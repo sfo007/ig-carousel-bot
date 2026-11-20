@@ -244,7 +244,7 @@
   },
   {
     "topic": "5 WordPress speed fixes that actually move Core Web Vitals",
-    "posted": false,
+    "posted": true,
     "content": {
       "slides": [
         {
@@ -359,7 +359,9 @@
         "websitespeed",
         "webdevelopment"
       ]
-    }
+    },
+    "postedAt": "2026-11-20T19:45:24.694Z",
+    "mediaId": "18063927053535203"
   },
   {
     "topic": "Shopify add-to-cart button: 5 changes that increase clicks",

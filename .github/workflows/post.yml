@@ -4,6 +4,8 @@ on:
   schedule:
     # Tuesday and Friday at 12:30 UTC = 6:00 PM IST
     - cron: "30 12 * * 2,5"
+    # Main trigger is cron-job.org (workflow_dispatch, dry_run=false) at 12:30 UTC.
+    # These GitHub schedules are only backups.
     # Backup attempts: GitHub sometimes drops or delays scheduled runs.
     # The script skips these if the post already went out today.
     - cron: "30 14 * * 2,5"
@@ -45,6 +47,7 @@ jobs:
         id: gen
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || 'false' }}
         run: node generate.js
 
       - name: Commit slides (so Instagram can fetch the images)

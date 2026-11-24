@@ -18,10 +18,11 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 
 const topics = JSON.parse(fs.readFileSync('topics.json', 'utf8'));
 
-// Backup scheduled runs must not double-post: skip if something was already posted today (UTC)
+// Real (non-dry) runs must not double-post: skip if something was already posted today (UTC).
+// Covers GitHub's backup schedules and external triggers (cron-job.org) that may retry.
 const today = new Date().toISOString().slice(0, 10);
-if (process.env.GITHUB_EVENT_NAME === 'schedule' && topics.some((t) => t.postedAt && t.postedAt.slice(0, 10) === today)) {
-  console.log('Already posted today, skipping this backup run');
+if (process.env.DRY_RUN !== 'true' && topics.some((t) => t.postedAt && t.postedAt.slice(0, 10) === today)) {
+  console.log('Already posted today, skipping this run');
   if (process.env.GITHUB_OUTPUT) fs.appendFileSync(process.env.GITHUB_OUTPUT, 'skip=true\n');
   process.exit(0);
 }

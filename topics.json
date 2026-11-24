@@ -365,7 +365,7 @@
   },
   {
     "topic": "Shopify add-to-cart button: 5 changes that increase clicks",
-    "posted": false,
+    "posted": true,
     "content": {
       "slides": [
         {
@@ -461,7 +461,9 @@
         "uxdesign",
         "conversionrate"
       ]
-    }
+    },
+    "postedAt": "2026-11-24T12:32:24.156Z",
+    "mediaId": "18133856743698905"
   },
   {
     "topic": "How to write product descriptions that convert",
